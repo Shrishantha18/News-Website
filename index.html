@@ -1,229 +1,187 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>News Hub</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tech News</title>
   <style>
     :root {
-      --bg-light: #f4f6f9;
-      --bg-dark: #121212;
-      --text-light: #333;
-      --text-dark: #f4f6f9;
-      --card-light: rgba(255, 255, 255, 0.85);
-      --card-dark: rgba(34, 34, 34, 0.85);
+      --bg: #f9fafc;
+      --text: #111;
+      --card-bg: #fff;
+      --accent: #007bff;
     }
+    .dark {
+      --bg: #121212;
+      --text: #f4f4f4;
+      --card-bg: #1e1e1e;
+      --accent: #00d1ff;
+    }
+
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: var(--bg-light);
-      color: var(--text-light);
       margin: 0;
-      padding: 0;
+      font-family: "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
       transition: background 0.3s, color 0.3s;
     }
-    body.dark {
-      background: var(--bg-dark);
-      color: var(--text-dark);
-    }
+
     header {
-      background: linear-gradient(90deg, #1a73e8, #673ab7);
-      color: white;
-      padding: 20px;
-      text-align: center;
-      font-size: 26px;
-      font-weight: bold;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      padding: 1rem 2rem;
+      background: var(--card-bg);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
-    .toggle-btn {
-      background: white;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 20px;
-      cursor: pointer;
-      font-weight: bold;
-      transition: 0.3s;
-    }
-    .toggle-btn:hover { background: #ddd; }
-    .search-bar {
-      display: flex;
-      justify-content: center;
-      margin: 25px;
-    }
-    .search-bar input {
-      padding: 12px;
-      width: 55%;
-      border: none;
-      border-radius: 25px 0 0 25px;
+    header h1 { margin: 0; font-size: 1.6rem; }
+    .controls { display: flex; gap: 0.5rem; align-items: center; }
+    input {
+      padding: 0.5rem 0.7rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
       outline: none;
-      transition: 0.3s;
+      font-size: 1rem;
     }
-    .search-bar input:focus {
-      width: 60%;
-      box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
-    }
-    .search-bar button {
-      padding: 12px 25px;
-      border: none;
-      background: #673ab7;
-      color: white;
-      border-radius: 0 25px 25px 0;
-      cursor: pointer;
-      font-weight: bold;
-      transition: 0.3s;
-    }
-    .search-bar button:hover {
-      background: #512da8;
-      transform: scale(1.05);
-    }
-    .container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 25px;
-      padding: 20px;
-    }
-    .card {
-      background: var(--card-light);
-      border-radius: 16px;
-      box-shadow: 0px 6px 12px rgba(0,0,0,0.15);
-      overflow: hidden;
-      transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
-    }
-    body.dark .card { background: var(--card-dark); }
-    .card:hover {
-      transform: translateY(-5px) scale(1.02);
-      box-shadow: 0px 8px 16px rgba(0,0,0,0.25);
-    }
-    .card img {
-      width: 100%;
-      height: 200px;
-      object-fit: cover;
-      background: #ccc;
-    }
-    .card-content { padding: 18px; }
-    .card-content h3 {
-      font-size: 20px;
-      margin: 0 0 10px;
-    }
-    .card-content p {
-      font-size: 14px;
-      line-height: 1.4;
-    }
-    .card-actions {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px 18px 18px;
-    }
-    .card-actions a {
-      text-decoration: none;
-      color: #1a73e8;
-      font-weight: bold;
-      transition: 0.3s;
-    }
-    .card-actions a:hover { color: #0d47a1; }
-    .download-btn {
-      padding: 6px 12px;
-      background: #1a73e8;
-      color: white;
+    button {
+      padding: 0.5rem 1rem;
       border: none;
       border-radius: 8px;
       cursor: pointer;
-      font-size: 14px;
-      transition: 0.3s;
+      background: var(--accent);
+      color: white;
+      font-weight: bold;
+      transition: transform 0.2s, background 0.2s;
     }
-    .download-btn:hover {
-      background: #0d47a1;
-      transform: scale(1.05);
+    button:hover { transform: scale(1.05); }
+
+    #newsContainer {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      padding: 2rem;
+    }
+    .card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.2s;
+    }
+    .card:hover { transform: translateY(-5px); }
+    .card img { width: 100%; height: 180px; object-fit: cover; }
+    .card-content { padding: 1rem; flex: 1; }
+    .card-content h3 { margin: 0 0 0.5rem; font-size: 1.2rem; }
+    .card-content p { font-size: 0.9rem; line-height: 1.4; opacity: 0.8; }
+    .card-actions {
+      display: flex;
+      justify-content: flex-end;
+      padding: 0.8rem 1rem 1.2rem;
+    }
+    .card-actions a {
+      text-decoration: none;
+      color: var(--accent);
+      font-weight: bold;
+    }
+
+    /* Notification popup */
+    #popup {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      background: var(--accent);
+      color: white;
+      padding: 0.8rem 1rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      opacity: 0;
+      transform: translateY(-20px);
+      transition: all 0.3s ease;
+      z-index: 200;
+    }
+    #popup.show {
+      opacity: 1;
+      transform: translateY(0);
     }
   </style>
 </head>
 <body>
-
   <header>
-    📰  News Hub
-    <button class="toggle-btn" onclick="toggleTheme()">🌙 Dark Mode</button>
+    <h1>📰 Tech News</h1>
+    <div class="controls">
+      <input type="text" id="searchBox" placeholder="Search news...">
+      <button onclick="searchNews()">Search</button>
+      <button onclick="loadHeadlines()">Top Headlines</button>
+      <button onclick="toggleTheme()">🌙</button>
+    </div>
   </header>
 
-  <div class="search-bar">
-    <input type="text" id="searchInput" placeholder="🔍 Search news...">
-    <button onclick="searchNews()">Search</button>
-  </div>
-
-  <div id="newsContainer" class="container"></div>
+  <div id="popup">✨ New news loaded!</div>
+  <main id="newsContainer"><p>Loading latest news...</p></main>
 
   <script>
-    const API_KEY = "6cf6e224492d450ebba422a5ec378cda"; // 🔑 Replace with your NewsAPI key
+    const apiKey = "2f02082a5f7e3d611a9112f8f0a66c41";  // ✅ your API key
     const newsContainer = document.getElementById("newsContainer");
-    const toggleBtn = document.querySelector(".toggle-btn");
+    const popup = document.getElementById("popup");
 
-    // Load top headlines by default
-    window.onload = () => {
-      fetchNews("everything");
-    };
+    async function fetchNews(url) {
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+        console.log(data);
 
-    function toggleTheme() {
-      document.body.classList.toggle("dark");
-      toggleBtn.textContent = document.body.classList.contains("dark")
-        ? "☀️ Light Mode"
-        : "🌙 Dark Mode";
+        if (data.articles && data.articles.length > 0) {
+          newsContainer.innerHTML = data.articles.map(article => `
+            <div class="card">
+              <img src="${article.image || 'https://via.placeholder.com/300'}" alt="news">
+              <div class="card-content">
+                <h3>${article.title}</h3>
+                <p>${article.description || "No description available."}</p>
+              </div>
+              <div class="card-actions">
+                <a href="${article.url}" target="_blank">Read More →</a>
+              </div>
+            </div>
+          `).join("");
+
+          showPopup();
+        } else {
+          newsContainer.innerHTML = "<p>No news found.</p>";
+        }
+      } catch (err) {
+        console.error("Error fetching news:", err);
+        newsContainer.innerHTML = "<p>Failed to load news.</p>";
+      }
+    }
+
+    function loadHeadlines() {
+      const url = `https://gnews.io/api/v4/top-headlines?topic=technology&lang=en&country=us&max=12&apikey=${"2f02082a5f7e3d611a9112f8f0a66c41"}`;
+      fetchNews(url);
     }
 
     function searchNews() {
-      const q = document.getElementById("searchInput").value || "everything";
-      fetchNews(q);
+      const query = document.getElementById("searchBox").value.trim();
+      if (!query) return;
+      const url = `https://gnews.io/api/v4/search?q=${encodeURIComponent(query)}&lang=en&max=12&apikey=${"2f02082a5f7e3d611a9112f8f0a66c41"}`;
+      fetchNews(url);
     }
 
-    async function fetchNews(query) {
-      newsContainer.innerHTML = "<p>Loading...</p>";
-      try {
-         const url = `https://newsapi.org/v2/everything?q=${encodeURIComponent(query)}&sortBy=publishedAt&pageSize=12&apiKey=${"6cf6e224492d450ebba422a5ec378cda"}`;
-
-        const res = await fetch(url);
-        const data = await res.json();
-        displayArticles(data.articles || []);
-      } catch (error) {
-        newsContainer.innerHTML = "<p>Error fetching news.</p>";
-        console.error(error);
-      }
+    function toggleTheme() {
+      document.body.classList.toggle("dark");
     }
 
-    function displayArticles(articles) {
-      if (!articles.length) {
-        newsContainer.innerHTML = "<p>No news found.</p>";
-        return;
-      }
-
-      const placeholder = "https://via.placeholder.com/400x200?text=No+Image";
-      newsContainer.innerHTML = articles.map(article => `
-        <div class="card">
-          <img
-            src="${article.urlToImage || placeholder}"
-            alt="news"
-            onerror="this.onerror=null;this.src='${placeholder}'"
-          />
-          <div class="card-content">
-            <h3>${article.title || "Untitled"}</h3>
-            <p>${article.description || "No description available."}</p>
-          </div>
-          <div class="card-actions">
-            <a href="${article.url}" target="_blank" rel="noopener noreferrer">Read More ➜</a>
-            <button class="download-btn" onclick='downloadArticle(${JSON.stringify(article).replace(/'/g, "&#39;")})'>⬇️ Download</button>
-          </div>
-        </div>
-      `).join("");
+    function showPopup() {
+      popup.classList.add("show");
+      setTimeout(() => popup.classList.remove("show"), 3000);
     }
 
-    function downloadArticle(article) {
-      const content = `Title: ${article.title || "Untitled"}\n\n${article.description || ""}\n\nRead more: ${article.url}`;
-      const blob = new Blob([content], { type: "text/plain" });
-      const link = document.createElement("a");
-      link.href = URL.createObjectURL(blob);
-      link.download = (article.title || "article").replace(/[^a-z0-9]/gi, "_") + ".txt";
-      link.click();
-    }
+    // Load news on start
+    loadHeadlines();
   </script>
-
 </body>
 </html>
